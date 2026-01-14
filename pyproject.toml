@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ccc_utils"
+version = "0.1.0"
+authors = [
+    {name = "Pável Hernández Reza", email = "onnymm@outlook.com" }]
+description = "Biblioteca de funciones generales para los proyectos en Python de La Casa Del Carpintero."
+readme = "README.md"
+license = { file = "LICENSE" }
+dependencies = [
+    "google-auth~=2.41.1",
+    "gspread~=6.2.1",
+    "pandas~=2.3.3",
+]
+
+[tool.setuptools]
+package-dir = { "" = "src" }

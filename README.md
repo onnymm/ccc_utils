@@ -4,20 +4,22 @@ Biblioteca de funciones generales para los proyectos en Python de La Casa Del Ca
 
 Esta biblioteca cuenta con varios módulos para diversas finalidades. Por favor lee su respectiva documentación para poder acondicionar tu espacio de trabajo antes de usarlos.
 
-### Índice
+## Índice
 
 **USO**
 - [Instalación](#instalación)
 
 **MÓDULOS**
-- [spreadsheet](#hojas-de-cálculo-spreadsheet)
+- [Conexión con Hojas de Cálculo de Google `spreadsheet`](#hojas-de-cálculo-spreadsheet)
     - [`write` Guardar en Hojas de Cálculo](#write-guardar-en-hojas-de-cálculo)
     - [`read` Cargar desde Hojas de Cálculo](#read-cargar-desde-hojas-de-cálculo)
 
 **CONFIGURACIÓN**
 - [Variables de entorno](#variables-de-entorno)
 
-### Instalación
+----
+
+## Instalación
 
 Instala esta librería por medio de **pip** con el siguiente comando:
 ```bash
@@ -34,19 +36,7 @@ Con eso estarás listo para comenzar a usar esta librería:
 from ccc_utils import spreadsheet
 ```
 
-## Variables de entorno
-
-Esta librería permite personalizar su comportamiento mediante variables de entorno, las cuales se utilizan para definir configuraciones como nombres personalizados de archivos requeridos u otros valores que necesiten diferir de la configuración predeterminada. Este mecanismo proporciona mayor flexibilidad, facilita la adaptación a distintos entornos y ayuda a evitar conflictos con otros proyectos, archivos o dependencias.
-
-Las variables de entorno pueden definirse en el archivo .env. En caso de que alguna no sea especificada, la librería utilizará automáticamente su valor prestablecido.
-
-A continuación se listan las variables de entorno disponibles, junto con su descripción y el valor predeterminado que se aplicará si no se proporciona una configuración explícita:
-
-| Nombre de la variable                       | Descripción                                                                                                                               | Valor prestablecido                  |
-|---------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------|
-| `CCC_SPREADSHEETS_SERVICE_JSON_CREDENTIALS` | Nombre de archivo de credenciales de cuenta de servicio en Google Cloud para el módulo [Hojas de Cálculo](#hojas-de-cálculo-spreadsheet). | `"spreadsheets_service_credentials"` |
-
-
+----
 
 ## Hojas de Cálculo `spreadsheet`
 
@@ -62,9 +52,11 @@ from ccc_utils import spreadsheet
 
 Esta función carga un DataFrame a partir de los datos en una hoja de un archivo de Hojas de Cálculo.
 
+> NOTA: Para leer un archivo de Hojas de Cálculo es necesario [conceder el permiso a la cuenta de servicio](#compartir-la-hoja-de-cálculo-con-la-cuenta-de-servicio) en éste.
+
 Parámetros:
-> - `spreadsheet_name`: `str` Nombre del archivo de Hojas de Cálculo.
-> - `sheet_name`: `str` Nombre de la hoja del archivo de Hojas de Cálculo.
+- `spreadsheet_name`: `str` Nombre del archivo de Hojas de Cálculo.
+- `sheet_name`: `str` Nombre de la hoja del archivo de Hojas de Cálculo.
 
 #### `write` Guardar en Hojas de Cálculo
 
@@ -72,10 +64,12 @@ Esta función escribe los datos del Pandas DataFrame provisto en una hoja de hoj
 
 Si el nombre de la hoja proporcionado apunta a una hoja que no existe, ésta se creará.
 
+> NOTA: Para escribir en un archivo de Hojas de Cálculo es necesario [conceder el permiso a la cuenta de servicio](#compartir-la-hoja-de-cálculo-con-la-cuenta-de-servicio) en éste.
+
 Parámetros:
-> - `data`: `DataFrame` Datos a escribir en el archivo de hojas de Cálculo.
-> - `spreadsheet_name`: `str` Nombre del archivo de Hojas de Cálculo.
-> - `sheet_name`: `str` Nombre de la hoja del archivo de Hojas de Cálculo.
+- `data`: `DataFrame` Datos a escribir en el archivo de hojas de Cálculo.
+- `spreadsheet_name`: `str` Nombre del archivo de Hojas de Cálculo.
+- `sheet_name`: `str` Nombre de la hoja del archivo de Hojas de Cálculo.
 
 ### Configuración
 
@@ -165,3 +159,20 @@ Compartir la hoja con la cuenta de servicio otorga permisos explícitos para que
 7. Pega la cuenta de correo.
 8. Asígnale permisos de `Editor`.
 9. Haz clic en `Guardar`.
+
+----
+
+## Variables de entorno
+
+Esta librería permite personalizar su comportamiento mediante variables de entorno, las cuales se utilizan para definir configuraciones como nombres personalizados de archivos requeridos u otros valores que necesiten diferir de la configuración predeterminada. Este mecanismo proporciona mayor flexibilidad, facilita la adaptación a distintos entornos y ayuda a evitar conflictos con otros proyectos, archivos o dependencias.
+
+Las variables de entorno pueden definirse en el archivo .env. En caso de que alguna no sea especificada, la librería utilizará automáticamente su valor prestablecido.
+
+A continuación se listan las variables de entorno disponibles, junto con su descripción y el valor predeterminado que se aplicará si no se proporciona una configuración explícita:
+
+| Nombre de la variable                       | Descripción                                                                                                                               | Valor prestablecido                  |
+|---------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------|
+| `CCC_SPREADSHEETS_SERVICE_JSON_CREDENTIALS` | Nombre de archivo de credenciales de cuenta de servicio en Google Cloud para el módulo [Hojas de Cálculo](#hojas-de-cálculo-spreadsheet). | `"spreadsheets_service_credentials"` |
+
+
+

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ccc_utils"
-version = "0.1.1"
+version = "0.2.0"
 authors = [
     {name = "Pável Hernández Reza", email = "onnymm@outlook.com" }]
 description = "Biblioteca de funciones generales para los proyectos en Python de La Casa Del Carpintero."
@@ -14,7 +14,7 @@ dependencies = [
     "google-auth~=2.41.1",
     "gspread~=6.2.1",
     "pandas~=2.3.3",
-    "python-dotenv~=1.2.1",
+    "dotenvironment=1.1.0",
 ]
 
 [tool.setuptools]

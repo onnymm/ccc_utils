@@ -4,6 +4,10 @@ from gspread import WorksheetNotFound
 import pandas as pd
 from google.oauth2.service_account import Credentials
 from ..._settings import CONFIG
+from ._utils import (
+    format_date_and_time_dtypes,
+    reorder_index,
+)
 
 _SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -94,6 +98,10 @@ def write(
     content = (
         list(
             data
+            # Reordenamiento y arreglo de índice
+            .pipe(reorder_index)
+            # Reasignación de tipos de dato para fecha y hora/duración
+            .pipe(format_date_and_time_dtypes)
             # Transposición del DataFrame
             .T
             # Conversión a diccionario

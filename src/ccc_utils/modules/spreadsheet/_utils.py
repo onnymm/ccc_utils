@@ -54,6 +54,7 @@ _parse_to: ParsingMap = {
     'datetime64[s]': lambda s: _days_from_date(s) + _day_fraction_from_datetime(s),
     'timedelta64[ns]': lambda s: _day_fraction_from_timedelta(s),
     'category': lambda s: s.astype('string'),
+    'object': lambda s: s.astype('string'),
 }
 'Convertir a...'
 
@@ -66,6 +67,7 @@ def format_date_and_time_dtypes(data: pd.DataFrame) -> pd.DataFrame:
 
     raw_dtypes: list[Dtypes] = (
         data
+        .dtypes
         .reset_index(name= COL_DTYPE)
         .assign(dtype= lambda df: df[COL_DTYPE].astype('string'))
         .to_dict('records')

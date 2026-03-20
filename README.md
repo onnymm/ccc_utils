@@ -70,6 +70,8 @@ Parámetros:
 - `data`: `DataFrame` Datos a escribir en el archivo de hojas de Cálculo.
 - `spreadsheet_name`: `str` Nombre del archivo de Hojas de Cálculo.
 - `sheet_name`: `str` Nombre de la hoja del archivo de Hojas de Cálculo.
+- `columns_start_position`: `str | None`: Posición inicial para comenzar a colocar las columnas.
+- `data_start_position`: `str | None`: Posición inicial para comenzar a colocar los datos sin incluir las columnas.
 
 ### Configuración
 

@@ -3,11 +3,13 @@ import gspread
 from gspread import WorksheetNotFound
 import pandas as pd
 from google.oauth2.service_account import Credentials
+from ..._resources import CellStartPoints
 from ..._settings import CONFIG
 from ._utils import (
     format_date_and_time_dtypes,
     reorder_index,
 )
+from ..._constants import COLUMNS_INITIAL_POSITION
 
 _SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -27,7 +29,7 @@ def _authenticate() -> gspread.auth.Client:
 
     return client
 
-def _get_spreadsheet(
+def _get_existing_spreadsheet(
     spreadsheet_name: str,
     sheet_name: Optional[str],
 ) -> gspread.spreadsheet.Worksheet:
@@ -63,10 +65,29 @@ def _create_spreadsheet(
 
     return sheet
 
+def _get_spreadsheet(
+    spreadsheet_name: str,
+    sheet_name: str | None,
+    data: pd.DataFrame,
+) -> gspread.spreadsheet.Worksheet:
+
+    # Se intenta abrir la hoja de cálculo
+    try:
+        # Obtención de la hoja de cálculo
+        sheet = _get_existing_spreadsheet(spreadsheet_name, sheet_name)
+    # En caso de que la hoja no exista...
+    except WorksheetNotFound:
+        # Se crea la nueva hoja en el libro 
+        sheet = _create_spreadsheet(spreadsheet_name, sheet_name, data)
+
+    return sheet
+
 def write(
     data: pd.DataFrame,
     spreadsheet_name: str,
     sheet_name: Optional[str] = None,
+    columns_start_position: Optional[str] = COLUMNS_INITIAL_POSITION,
+    data_start_position: Optional[str] = None,
 ) -> None:
     """
     ### Guardar en Hojas de Cálculo
@@ -80,16 +101,20 @@ def write(
         cálculo.
     :param str spreadsheet_name: Nombre del archivo de Hojas de Cálculo.
     :param str sheet_name: Nombre de la hoja del archivo de Hojas de Cálculo.
+    :param str columns_start_position: Posición inicial para comenzar a colocar las
+    columnas.
+    :param str data_start_position: Posición inicial para comenzar a colocar los
+    datos sin incluir las columnas.
     """
 
-    # Se intenta abrir la hoja de cálculo
-    try:
-        # Obtención de la hoja de cálculo
-        sheet = _get_spreadsheet(spreadsheet_name, sheet_name)
-    # En caso de que la hoja no exista...
-    except WorksheetNotFound:
-        # Se crea la nueva hoja en el libro 
-        sheet = _create_spreadsheet(spreadsheet_name, sheet_name, data)
+    # Obtención de posiciones para colocar los datos
+    ( columns_cell, data_cell ) = (
+        CellStartPoints(columns_start_position, data_start_position)
+        .get_positions()
+    )
+
+    # Obtención de la hoja
+    sheet = _get_spreadsheet(spreadsheet_name, sheet_name, data)
 
     # Obtención de las columnas del DataFrame
     columns = [data.columns.to_list(),]
@@ -112,8 +137,8 @@ def write(
     )
 
     # Escritura en la hoja de cálculo
-    sheet.update(columns, 'A1')
-    sheet.update(content, 'A2')
+    sheet.update(columns, columns_cell)
+    sheet.update(content, data_cell)
 
 def load(
     spreadsheet_name: str,
@@ -129,7 +154,7 @@ def load(
     """
 
     # Obtención de la hoja de cálculo
-    sheet = _get_spreadsheet(spreadsheet_name, sheet_name)
+    sheet = _get_existing_spreadsheet(spreadsheet_name, sheet_name)
     # Obtención de los datos de la hoja
     data = sheet.get_all_records()
     # Creación del DataFrame

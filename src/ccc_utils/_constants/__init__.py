@@ -1,7 +1,8 @@
 from ._main import (
     COL_DTYPE,
     COL_INDEX,
+    COLUMNS_INITIAL_POSITION,
     INITIAL_DATE,
     PROJECT_PREFIX,
-    REINDEX_NAME,
+    REINDEX_NAME
 )

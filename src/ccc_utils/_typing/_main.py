@@ -18,3 +18,7 @@ SeriesApply = Callable[[_T], Any]
 SeriesPipe = Callable[[pd.Series], pd.Series]
 
 ParsingMap = dict[AstypeArg, SeriesPipe]
+
+SeriesFromDataFrame = Callable[[pd.DataFrame], pd.Series]
+
+ColumnAssignation = dict[str, SeriesFromDataFrame]

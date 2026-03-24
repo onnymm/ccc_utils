@@ -64,6 +64,48 @@ Esta función escribe los datos del Pandas DataFrame provisto en una hoja de hoj
 
 Si el nombre de la hoja proporcionado apunta a una hoja que no existe, ésta se creará.
 
+Para asegurar el formato de los datos en la hoja destino, es necesario tomar en cuenta que este método convierte fechas y horas en la codificación usada por Microsoft Excel y Google Sheets, en valores numéricos con decimales.
+
+El parseo de los datos se determina por el `dtype` de la columna, así que es necesario convertir los tipos de dato necesarios antes de realizar la escritura.
+
+Los `dtypes` a parsear son:
+
+- `datetime64[as]`: Numérico entero con fracción para valor de fecha con o sin hora.
+- `datetime64[D]`: Numérico entero con fracción para valor de fecha con o sin hora.
+- `datetime64[fs]`: Numérico entero con fracción para valor de fecha con o sin hora.
+- `datetime64[h]`: Numérico entero con fracción para valor de fecha con o sin hora.
+- `datetime64[M]`: Numérico entero con fracción para valor de fecha con o sin hora.
+- `datetime64[m]`: Numérico entero con fracción para valor de fecha con o sin hora.
+- `datetime64[ms]`: Numérico entero con fracción para valor de fecha con o sin hora.
+- `datetime64[ns]`: Numérico entero con fracción para valor de fecha con o sin hora.
+- `datetime64[ps]`: Numérico entero con fracción para valor de fecha con o sin hora.
+- `datetime64[s]`: Numérico entero con fracción para valor de fecha con o sin hora.
+- `datetime64[us]`: Numérico entero con fracción para valor de fecha con o sin hora.
+- `datetime64[W]`: Numérico entero con fracción para valor de fecha con o sin hora.
+- `datetime64[Y]`: Numérico entero con fracción para valor de fecha con o sin hora.
+- `datetime64[μs]`: Numérico entero con fracción para valor de fecha con o sin hora.
+- `timedelta64[as]`: Numérico con fracción para valor de tiempo o duración.
+- `timedelta64[D]`: Numérico con fracción para valor de tiempo o duración.
+- `timedelta64[fs]`: Numérico con fracción para valor de tiempo o duración.
+- `timedelta64[h]`: Numérico con fracción para valor de tiempo o duración.
+- `timedelta64[M]`: Numérico con fracción para valor de tiempo o duración.
+- `timedelta64[m]`: Numérico con fracción para valor de tiempo o duración.
+- `timedelta64[ms]`: Numérico con fracción para valor de tiempo o duración.
+- `timedelta64[ns]`: Numérico con fracción para valor de tiempo o duración.
+- `timedelta64[ps]`: Numérico con fracción para valor de tiempo o duración.
+- `timedelta64[s]`: Numérico con fracción para valor de tiempo o duración.
+- `timedelta64[us]`: Numérico con fracción para valor de tiempo o duración.
+- `timedelta64[W]`: Numérico con fracción para valor de tiempo o duración.
+- `timedelta64[Y]`: Numérico con fracción para valor de tiempo o duración.
+- `timedelta64[μs]`: Numérico con fracción para valor de tiempo o duración.
+- `category`: Texto.
+- `str`: Texto.
+- `string`: Texto.
+- `string[pyarrow]`: Texto.
+- `string[python]`: Texto.
+- `object`: Texto.
+- `O`: Texto.
+
 > NOTA: Para escribir en un archivo de Hojas de Cálculo es necesario [conceder el permiso a la cuenta de servicio](#compartir-la-hoja-de-cálculo-con-la-cuenta-de-servicio) en éste.
 
 Parámetros:

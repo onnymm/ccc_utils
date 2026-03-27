@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from datetime import timedelta
 from typing import Callable
 import pandas as pd
+import numpy as np
 from pandas._typing import AstypeArg
 from ..._constants import (
     COLUMN,
@@ -23,7 +24,7 @@ _seconds_to_numeric: SeriesPipe = lambda s: s / SECONDS_IN_ONE.DAY
 # Funciones para [datetime]
 _date_to_days: SeriesPipe = lambda s: s.dt.date - INITIAL_DATE
 'Fecha a días en codificación de fecha en Excel.'
-_days_delta: SeriesApply[timedelta] = lambda td: td.days
+_days_delta: SeriesApply[timedelta] = lambda td: td.days if td is not np.nan else np.nan
 'Delta de días desde fecha inicial en codificación de fecha en Excel.'
 
 _hours_to_seconds: SeriesPipe = lambda s: s.dt.hour * SECONDS_IN_ONE.HOUR
@@ -39,6 +40,15 @@ _days_to_seconds: SeriesPipe = lambda s: s.dt.days * SECONDS_IN_ONE.DAY
 'Días a segundos.'
 _timdelta_to_seconds: SeriesPipe = lambda s: _days_to_seconds(s) + s.dt.seconds
 'Delta de tiempo a segundos.'
+_replace_nat_with_none: SeriesPipe = (
+    lambda s: (
+        s
+        .astype('float64')
+        .astype('object')
+        .replace({np.nan: None})
+    )
+)
+'Función para conversión de dtype y reemplazo de valores `NaT` por `None`.'
 
 _date_to_integer: SeriesPipe = (
     lambda s: (
@@ -64,19 +74,17 @@ _datetime_to_numeric_fn: SeriesPipe = (
             _date_to_integer(s)
             + _day_fraction_from_datetime(s)
         )
-        .astype('float64')
+        .pipe(_replace_nat_with_none)
     )
 )
 'Formateo de tipo `datetime` a codificación numérica de Excel.'
 
 _timedelta_to_numeric_fn: SeriesPipe = (
     lambda s: (
-        (
-            s
-            .pipe(_timdelta_to_seconds)
-            .pipe(_seconds_to_numeric)
-        )
-        .astype('float64')
+        s
+        .pipe(_timdelta_to_seconds)
+        .pipe(_seconds_to_numeric)
+        .pipe(_replace_nat_with_none)
     )
 )
 'Formateo de tipo `timedelta` a codificación numérica de Excel.'

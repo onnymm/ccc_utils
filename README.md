@@ -114,7 +114,7 @@ Parámetros:
 - `sheet_name`: `str` Nombre de la hoja del archivo de Hojas de Cálculo.
 - `columns_start_position`: `str | None`: Posición inicial para comenzar a colocar las columnas.
 - `data_start_position`: `str | None`: Posición inicial para comenzar a colocar los datos sin incluir las columnas.
-- `method`: `"replace" | "append"`: Método de escritura. Las opciones disponibles son:
+- `method`: `WriteMethodOption`: Método de escritura. Las opciones disponibles son:
     - `"replace"`: Reemplaza los datos existentes.
     - `"append"`: Añade los datos al final de la hoja.
 

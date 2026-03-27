@@ -12,3 +12,4 @@ from ._main import (
     load,
     write,
 )
+from ..._typing import WriteMethodOption

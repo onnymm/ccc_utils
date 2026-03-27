@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ccc_utils"
-version = "0.2.3"
+version = "0.5.1"
 authors = [
     {name = "Pável Hernández Reza", email = "onnymm@outlook.com" }]
 description = "Biblioteca de funciones generales para los proyectos en Python de La Casa Del Carpintero."

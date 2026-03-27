@@ -6,4 +6,5 @@ from ._main import (
     SeriesApply,
     SeriesFromDataFrame,
     SeriesPipe,
+    WriteMethodOption,
 )

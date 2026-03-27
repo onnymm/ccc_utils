@@ -4,5 +4,6 @@ from ._main import (
     INITIAL_DATE,
     PROJECT_PREFIX,
     REINDEX_NAME,
+    SPREADSHEETS_SCOPE,
     SECONDS_IN_ONE,
 )

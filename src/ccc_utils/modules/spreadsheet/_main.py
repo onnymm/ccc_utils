@@ -1,86 +1,15 @@
 from typing import Optional
-import gspread
-from gspread import WorksheetNotFound
 import pandas as pd
-from google.oauth2.service_account import Credentials
-from ..._resources import CellStartPoints
-from ..._settings import CONFIG
-from ._utils import (
-    format_date_and_time_dtypes,
-    reorder_index,
-)
 from ..._constants import COLUMNS_INITIAL_POSITION
-
-_SCOPES = [
-    "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/drive"
-]
-
-def _authenticate() -> gspread.auth.Client:
-
-    # Autentización
-    credentials = Credentials.from_service_account_file(
-        f'{CONFIG.SPREADSHEET.GOOGLE_CLOUD_JSON_CREDENTIALS}.json',
-        scopes= _SCOPES,
-    )
-
-    # Creación de una instancia de cliente
-    client = gspread.authorize(credentials)
-
-    return client
-
-def _get_existing_spreadsheet(
-    spreadsheet_name: str,
-    sheet_name: Optional[str],
-) -> gspread.spreadsheet.Worksheet:
-
-    # Creación de una instancia de cliente
-    client = _authenticate()
-    # Obtención del libro
-    spreadsheets_file = client.open(spreadsheet_name)
-
-    # Si un nombre de hoja fue proporcionado...
-    if sheet_name:
-        # Se abre ésta
-        sheet = spreadsheets_file.worksheet(sheet_name)
-    # Si no fue especificada una hoja...
-    else:
-        # Se abre la primera hoja encontrada
-        sheet = spreadsheets_file.sheet1
-
-    return sheet
-
-def _create_spreadsheet(
-    spreadsheet_name: str,
-    sheet_name: Optional[str],
-    data: pd.DataFrame,
-) -> gspread.spreadsheet.Worksheet:
-
-    # Creación de una instancia de cliente
-    client = _authenticate()
-    # Obtención del libro
-    spreadsheets_file = client.open(spreadsheet_name)
-    # Creación de la nueva hoja
-    sheet = spreadsheets_file.add_worksheet(sheet_name, *data.shape)
-
-    return sheet
-
-def _get_spreadsheet(
-    spreadsheet_name: str,
-    sheet_name: str | None,
-    data: pd.DataFrame,
-) -> gspread.spreadsheet.Worksheet:
-
-    # Se intenta abrir la hoja de cálculo
-    try:
-        # Obtención de la hoja de cálculo
-        sheet = _get_existing_spreadsheet(spreadsheet_name, sheet_name)
-    # En caso de que la hoja no exista...
-    except WorksheetNotFound:
-        # Se crea la nueva hoja en el libro 
-        sheet = _create_spreadsheet(spreadsheet_name, sheet_name, data)
-
-    return sheet
+from ..._resources import CellStartPoints
+from ..._typing import WriteMethodOption
+from ...errors import InvalidWriteMethod
+from ._core import (
+    get_existing_spreadsheet,
+    get_or_create_spreadsheet,
+    update_with_append,
+    update_with_replace,
+)
 
 def write(
     data: pd.DataFrame,
@@ -88,6 +17,7 @@ def write(
     sheet_name: Optional[str] = None,
     columns_start_position: Optional[str] = COLUMNS_INITIAL_POSITION,
     data_start_position: Optional[str] = None,
+    method: WriteMethodOption = 'replace',
 ) -> None:
     """
     ### Guardar en Hojas de Cálculo
@@ -105,40 +35,27 @@ def write(
     columnas.
     :param str data_start_position: Posición inicial para comenzar a colocar los
     datos sin incluir las columnas.
+    :param WriteMethodOption method: Método de escritura.
     """
 
-    # Obtención de posiciones para colocar los datos
-    ( columns_cell, data_cell ) = (
-        CellStartPoints(columns_start_position, data_start_position)
-        .get_positions()
-    )
+    # Obtención o creación de la hoja
+    sheet = get_or_create_spreadsheet(spreadsheet_name, sheet_name, data)
+    # Inicialización de instancia de puntos de inicio de celdas
+    cell_start_points = CellStartPoints(columns_start_position, data_start_position)
 
-    # Obtención de la hoja
-    sheet = _get_spreadsheet(spreadsheet_name, sheet_name, data)
+    # Si el tipo de método es de reemplazo...
+    if method == 'replace':
+        # Se realiza la escritura de datos con reemplazo
+        update_with_replace(data, sheet, cell_start_points)
 
-    # Obtención de las columnas del DataFrame
-    columns = [data.columns.to_list(),]
+    # Si el tipo de método es de añadir datos al final...
+    elif method == 'append':
+        # Se realiza la escritura de datos añadiéndolos al final
+        update_with_append(data, sheet, cell_start_points)
 
-    # Obtención del contenido del DataFrame
-    content = (
-        list(
-            data
-            # Reordenamiento y arreglo de índice
-            .pipe(reorder_index)
-            # Reasignación de tipos de dato para fecha y hora/duración
-            .pipe(format_date_and_time_dtypes)
-            # Transposición del DataFrame
-            .T
-            # Conversión a diccionario
-            .to_dict('list')
-            # Obtención de los valores
-            .values()
-        )
-    )
-
-    # Escritura en la hoja de cálculo
-    sheet.update(columns, columns_cell)
-    sheet.update(content, data_cell)
+    else:
+        # Se lanza error de método de escritura inválido
+        raise InvalidWriteMethod(f'El método "{method}" no es válido.')
 
 def load(
     spreadsheet_name: str,
@@ -154,7 +71,7 @@ def load(
     """
 
     # Obtención de la hoja de cálculo
-    sheet = _get_existing_spreadsheet(spreadsheet_name, sheet_name)
+    sheet = get_existing_spreadsheet(spreadsheet_name, sheet_name)
     # Obtención de los datos de la hoja
     data = sheet.get_all_records()
     # Creación del DataFrame

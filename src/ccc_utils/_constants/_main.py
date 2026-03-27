@@ -36,3 +36,12 @@ REINDEX_NAME = '__index__'
 `Literal[str]` Nombre predeterminado para renombrar índices en método
 `reset_index` de DataFrames.
 """
+
+class _SCOPE_AUTH:
+    SPREADSHEETS = "https://www.googleapis.com/auth/spreadsheets"
+    DRIVE = "https://www.googleapis.com/auth/drive"
+
+SPREADSHEETS_SCOPE = [
+    _SCOPE_AUTH.SPREADSHEETS,
+    _SCOPE_AUTH.DRIVE,
+]

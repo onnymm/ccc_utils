@@ -26,6 +26,12 @@ class _CellPoint:
 
         return new
 
+    def to_string(
+        self,
+    ) -> str:
+
+        return str(self)
+
     def __repr__(
         self,
     ) -> str:

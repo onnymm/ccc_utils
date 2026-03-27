@@ -1,6 +1,7 @@
 from typing import (
     Any,
     Callable,
+    Literal,
     TypedDict,
     TypeVar,
 )
@@ -22,3 +23,5 @@ ParsingMap = dict[AstypeArg, SeriesPipe]
 SeriesFromDataFrame = Callable[[pd.DataFrame], pd.Series]
 
 ColumnAssignation = dict[str, SeriesFromDataFrame]
+
+WriteMethodOption = Literal['replace', 'append']

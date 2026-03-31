@@ -86,8 +86,6 @@ def update_with_replace(
     # Obtención del contenido del DataFrame
     content = get_content(data)
 
-    # Se limpia la hoja
-    sheet.clear()
     # Obtención de las columnas del DataFrame
     columns = [data.columns.to_list(),]
     # Obtención de posición para colocar las columnas de los datos

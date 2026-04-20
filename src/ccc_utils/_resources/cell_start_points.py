@@ -19,7 +19,7 @@ class _CellPoint:
 
     def copy(
         self,
-    ) -> _CellPoint:
+    ) -> '_CellPoint':
 
         # Creación de nueva instancia
         new = _CellPoint(f'{self}')
